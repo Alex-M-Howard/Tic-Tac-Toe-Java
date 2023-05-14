@@ -3,9 +3,12 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ArrayList;
 
 public class TicTacToeFrame extends JFrame {
     private TicTacToeGame game;
+    private List<JButton> buttons = new ArrayList<>();
 
     TicTacToeFrame(TicTacToeGame game) {
         this.game = game;
@@ -25,6 +28,9 @@ public class TicTacToeFrame extends JFrame {
     }
 
     void createGameTitle() {
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new BorderLayout());
+
         JLabel label = new JLabel();
         label.setText("TIC-TAC-TOE");
         label.setHorizontalAlignment(JLabel.CENTER);
@@ -32,6 +38,17 @@ public class TicTacToeFrame extends JFrame {
         label.setForeground(Color.BLACK);
         label.setFont(new Font("Roboto", Font.BOLD, 35));
         this.add(label, BorderLayout.NORTH); // Add label to the North region of BorderLayout
+
+        JButton restartButton = new JButton("Restart");
+        restartButton.setFont(new Font("Roboto", Font.PLAIN, 20));
+        northPanel.add(restartButton, BorderLayout.EAST);
+        restartButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event){
+                restartGame();
+            }
+        });
+
+        this.add(northPanel, BorderLayout.NORTH);
     }
 
     void createGameBoard() {
@@ -49,12 +66,55 @@ public class TicTacToeFrame extends JFrame {
                 public void actionPerformed(ActionEvent event) {
                     int row = finalI / 3;
                     int col = finalI % 3;
+
+                    if(!game.getGameOver()){
+                        if (game.getCurrentPlayer() == 1){
+                            button.setText("X");
+                        } else {
+                            button.setText("O");
+                        }
+                    }
+
+                    button.setEnabled(false);
                     game.makeMove(row, col);
+
+                    if (game.getGameOver()){
+                        disableButtons();
+                        List<int[]> winningLine = game.getLastWinningLine();
+                        if (winningLine != null) {
+                            highlightWinningLine(winningLine);
+                        }
+                    }
                 }
             });
-
+            buttons.add(button);
             gameBoard.add(button);
         }
         this.add(gameBoard, BorderLayout.CENTER); // Add gameBoard to the Center region of BorderLayout
+    }
+
+    void disableButtons() {
+        for(JButton button : buttons) {
+            button.setEnabled(false);
+        }
+    }
+
+    void highlightWinningLine(List<int[]> winningLine) {
+        for (int[] pos : winningLine) {
+            int index = pos[0] * 3 + pos[1];
+            JButton winningButton = buttons.get(index);
+            winningButton.setEnabled(true);
+            winningButton.setForeground(Color.GREEN);
+        }
+    }
+
+    void restartGame() {
+        game = new TicTacToeGame();
+
+        for (JButton button : buttons) {
+            button.setText("");
+            button.setEnabled(true);
+            button.setForeground(Color.BLACK);
+        }
     }
 }
