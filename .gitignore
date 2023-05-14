@@ -1,6 +1,6 @@
 /.idea/
 /out/
 /META-INF/
-.class
-.iml
-.idea
+*.class
+*.idea
+*.iml
