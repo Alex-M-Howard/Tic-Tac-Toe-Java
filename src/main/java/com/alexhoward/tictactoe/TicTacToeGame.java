@@ -40,15 +40,13 @@ public class TicTacToeGame {
                 System.out.println("Tie game");
             }
         }
-
-        printCurrentGame();
     }
 
-    public void changePlayer(){
+    private void changePlayer(){
         currentPlayer = currentPlayer == 1 ? 2 : 1;
     }
 
-    public void setPlayerMove(int row, int col){
+    private void setPlayerMove(int row, int col){
         gameGrid[row][col] = currentPlayer;
     }
 
@@ -112,12 +110,11 @@ public class TicTacToeGame {
         return lastWinningLine;
     }
 
-    public void printCurrentGame(){
-        for(int[] row: gameGrid){
-            for(int col: row){
-                System.out.print(col);
-            }
-            System.out.print("\n");
-        }
+    public int getWinner() {
+        return winner;
+    }
+
+    public int[][] getGameGrid() {
+        return gameGrid;
     }
 }
